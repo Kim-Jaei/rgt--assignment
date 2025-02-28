@@ -59,7 +59,7 @@ export default function BookDetail() {
   return (
     <div>
       <header>
-        <h1>온라인 서점</h1>
+        <h1>재이서점</h1>
       </header>
       <nav>
         <ul>
