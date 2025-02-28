@@ -2,8 +2,20 @@ import { Request, Response } from 'express';
 import { Book } from '../models/Book';
 
 let books: Book[] = [
-  { id: 1, title: '소년이 온다', author: '한강', price: 30000, sales: 10 },
-  { id: 2, title: '소스 코드', author: '빌 게이츠', price: 25000, sales: 5 },
+  { id: 1, title: '가', author: '철수', price: 30000, sales: 10 },
+  { id: 2, title: '나', author: '영희', price: 25000, sales: 5 },
+  { id: 3, title: '다', author: '민재', price: 30000, sales: 13 },
+  { id: 4, title: '라', author: '서연', price: 25000, sales: 50 },
+  { id: 5, title: '마', author: '수지', price: 30000, sales: 22 },
+  { id: 6, title: '바', author: '지민', price: 25000, sales: 8 },
+  { id: 7, title: '사', author: '민정', price: 30000, sales: 30 },
+  { id: 8, title: '아', author: '동원', price: 25000, sales: 40 },
+  { id: 9, title: '자', author: '지혜', price: 30000, sales: 1 },
+  { id: 10, title: '차', author: '태현', price: 25000, sales: 10 },
+  { id: 11, title: '카', author: '재원', price: 30000, sales: 10 },
+  { id: 12, title: '타', author: '유하', price: 25000, sales: 43 },
+  { id: 13, title: '파', author: '주원', price: 30000, sales: 9 },
+  { id: 14, title: '하', author: '성윤', price: 25000, sales: 31 },
 ];
 
 // 책 목록 조회
