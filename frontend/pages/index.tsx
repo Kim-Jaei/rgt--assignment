@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import api from '../services/api';
 import { Book } from '../types/Book';
+import BookCard from '../components/BookCard';
 
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -118,12 +119,7 @@ export default function Home() {
         <>
           <div className="book-grid">
             {books.map((book) => (
-              <div key={book.id}>
-                <h3>{book.title}</h3>
-                <p>{book.author}</p>
-                <p>{book.price.toLocaleString()}원</p>
-                <p>판매량: {book.sales}</p>
-              </div>
+              <BookCard key={book.id} book={book} />
             ))}
           </div>
           <div className="pagination">

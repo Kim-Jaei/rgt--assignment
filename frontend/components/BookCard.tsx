@@ -35,13 +35,6 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
           </div>
           <div className="book-info">
             <h3 className="book-title">{book.title}</h3>
-            <p className="book-author">{book.author}</p>
-            <div className="book-details">
-              <span className="book-price">
-                {book.price.toLocaleString()}원
-              </span>
-              <span className="book-sales">판매량: {book.sales}</span>
-            </div>
           </div>
         </div>
       </a>

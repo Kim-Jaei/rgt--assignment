@@ -19,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title = '재이서점' }) => 
         <div className="header-content">
           <h1 className="site-title">
             <Link href="/" className="site-title-link">
-              📚 {title}
+              📚 재이서점
             </Link>
           </h1>
           <nav className="main-nav">
