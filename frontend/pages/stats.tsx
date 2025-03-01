@@ -11,7 +11,6 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-
 import Layout from '../components/Layout';
 import api from '../services/api';
 
@@ -44,8 +43,6 @@ export default function Stats() {
     const fetchStats = async () => {
       try {
         const response = await api.get('/books/sales');
-
-        // 안전한 데이터 처리
         const data = response.data || {};
         setStatsData({
           totalSales: data.totalSales || 0,
@@ -62,16 +59,13 @@ export default function Stats() {
         });
         setLoading(false);
       } catch (err) {
-        console.error(err);
         setError('통계 데이터를 불러오는 데 실패했습니다.');
         setLoading(false);
       }
     };
-
     fetchStats();
   }, []);
 
-  // 가격대별 판매 분포 데이터 변환
   const priceRangeData = statsData
     ? [
         { name: '1만원 미만', value: statsData.priceRanges.under10000 },
@@ -81,19 +75,14 @@ export default function Stats() {
       ]
     : [];
 
-  // 베스트셀러 데이터
   const bestSellerData = statsData?.bestSellers || [];
-
-  // 파이 차트 컬러
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
     <Layout title="판매 통계">
       <h2 className="page-title">판매 통계 대시보드</h2>
-
       {loading && <div className="loading-spinner">로딩 중...</div>}
       {error && <div className="error-message">{error}</div>}
-
       {statsData && (
         <div className="stats-container">
           <div className="stats-cards">
@@ -118,7 +107,6 @@ export default function Stats() {
               <p className="stats-number">{statsData.averageSalePerBook}권</p>
             </div>
           </div>
-
           <div className="charts-container">
             <div className="chart-section">
               <h3>베스트셀러 Top 5</h3>
@@ -136,7 +124,6 @@ export default function Stats() {
                 <Bar dataKey="sales" fill="#8884d8" name="판매량" />
               </BarChart>
             </div>
-
             <div className="chart-section">
               <h3>가격대별 판매 분포</h3>
               <PieChart width={400} height={300}>

@@ -253,7 +253,6 @@ body {
   background-color: var(--primary-dark);
 }
 
-/* 정렬(소트) */
 .sort-controls {
   display: flex;
   gap: 1rem;
@@ -320,7 +319,6 @@ body {
   color: #777;
 }
 
-/* 에러/성공 메시지 (중복 제거 & 통합) */
 .error-message {
   background-color: #ffebee;
   color: #c62828;
@@ -479,7 +477,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 16px; /* 중복 제거 */
+  margin-bottom: 16px;
 }
 
 .form-label {

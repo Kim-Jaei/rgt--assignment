@@ -7,7 +7,6 @@ import { Book } from '../../types/Book';
 export default function BookDetailPage() {
   const router = useRouter();
   const { id } = router.query;
-
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +23,6 @@ export default function BookDetailPage() {
       setBook(res.data);
       setError(null);
     } catch (err) {
-      console.error(err);
       setError('책 정보를 불러오는 데 실패했습니다.');
       setBook(null);
     } finally {

@@ -18,7 +18,6 @@ export default function NewBookPage() {
     setLoading(true);
     setError('');
     setSuccess('');
-
     try {
       await api.post('/books', {
         title,
@@ -27,14 +26,12 @@ export default function NewBookPage() {
         sales: Number(sales) || 0,
       });
       setSuccess('책이 성공적으로 등록되었습니다!');
-      // 등록 후 폼 초기화
       setTitle('');
       setAuthor('');
       setPrice('');
       setSales('');
     } catch (err) {
       setError('책 등록에 실패했습니다.');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -46,7 +43,6 @@ export default function NewBookPage() {
         <h2>새 책 등록</h2>
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}
-
         <form onSubmit={handleSubmit} className="book-form">
           <div className="form-group">
             <label htmlFor="title">제목</label>
@@ -58,7 +54,6 @@ export default function NewBookPage() {
               required
             />
           </div>
-
           <div className="form-group">
             <label htmlFor="author">저자</label>
             <input
@@ -69,7 +64,6 @@ export default function NewBookPage() {
               required
             />
           </div>
-
           <div className="form-group">
             <label htmlFor="price">가격</label>
             <input
@@ -80,7 +74,6 @@ export default function NewBookPage() {
               required
             />
           </div>
-
           <div className="form-group">
             <label htmlFor="sales">판매량 (선택)</label>
             <input
@@ -90,7 +83,6 @@ export default function NewBookPage() {
               onChange={(e) => setSales(e.target.value)}
             />
           </div>
-
           <button type="submit" className="submit-button" disabled={loading}>
             {loading ? '등록 중...' : '등록하기'}
           </button>
