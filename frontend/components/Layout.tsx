@@ -11,7 +11,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title = '재이서점' }) => 
     <div className="layout">
       <Head>
         <title>{title}</title>
-        <meta name="description" content="온라인 서점 애플리케이션" />
+        <meta name="description" content="재이서점 애플리케이션" />
         <link rel="icon" href="data:;base64,=" /> {/* favicon 404 방지 */}
       </Head>
 
@@ -19,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title = '재이서점' }) => 
         <div className="header-content">
           <h1 className="site-title">
             <Link href="/" className="site-title-link">
-              📚 재이서점점
+              📚 재이서점
             </Link>
           </h1>
           <nav className="main-nav">

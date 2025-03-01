@@ -68,7 +68,7 @@ export default function Home() {
   };
 
   return (
-    <Layout title="온라인 서점">
+    <Layout title="재이 서점">
       <div className="filters-container">
         <form onSubmit={handleSearch} className="search-form">
           <input
