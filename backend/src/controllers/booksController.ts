@@ -278,58 +278,96 @@ export const getBookById = (req: Request, res: Response) => {
 // 책 추가 API
 export const createBook = (req: Request, res: Response) => {
   const { title, author, price, sales } = req.body;
-  const newBook: Book = {
-    id: books.length ? books[books.length - 1].id + 1 : 1,
+
+  // 유효성 검사
+  if (!title || !author || !price) {
+    return res.status(400).json({ message: '필수 정보가 누락되었습니다.' });
+  }
+
+  // 새 책 추가 (실제 운영에서는 데이터베이스 사용)
+  const newBook = {
+    id: books.length + 1,
     title,
     author,
-    price,
-    sales: sales || 0,
+    price: Number(price),
+    sales: Number(sales) || 0,
   };
+
   books.push(newBook);
-  res.status(201).json(newBook);
+
+  res.status(201).json({
+    message: '책이 성공적으로 등록되었습니다.',
+    book: newBook,
+  });
 };
 
 // 책 수정 API
 export const updateBook = (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
-  const index = books.findIndex((b) => b.id === id);
-  if (index < 0) {
-    return res.status(404).json({ error: 'Book not found' });
+  const bookId = parseInt(req.params.id);
+  const { title, author, price } = req.body;
+
+  const bookIndex = books.findIndex((book) => book.id === bookId);
+
+  if (bookIndex === -1) {
+    return res.status(404).json({ message: '책을 찾을 수 없습니다.' });
   }
 
-  const { title, author, price, sales } = req.body;
-  books[index] = {
-    ...books[index],
-    title: title ?? books[index].title,
-    author: author ?? books[index].author,
-    price: price ?? books[index].price,
-    sales: sales ?? books[index].sales,
+  books[bookIndex] = {
+    ...books[bookIndex],
+    title: title || books[bookIndex].title,
+    author: author || books[bookIndex].author,
+    price: price || books[bookIndex].price,
   };
 
-  res.json(books[index]);
+  res.json(books[bookIndex]);
 };
 
 // 책 삭제 API
 export const deleteBook = (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
-  const index = books.findIndex((b) => b.id === id);
-  if (index < 0) {
-    return res.status(404).json({ error: 'Book not found' });
+  const bookId = parseInt(req.params.id);
+
+  const bookIndex = books.findIndex((book) => book.id === bookId);
+
+  if (bookIndex === -1) {
+    return res.status(404).json({ message: '책을 찾을 수 없습니다.' });
   }
-  books.splice(index, 1);
-  res.status(204).send();
+
+  books.splice(bookIndex, 1);
+
+  res.json({ message: '책이 성공적으로 삭제되었습니다.' });
 };
 
 // 판매 통계 API
 export const getSalesStats = (req: Request, res: Response) => {
+  // 기본
   const totalSales = books.reduce((sum, b) => sum + b.sales, 0);
   const totalBooks = books.length;
   const totalRevenue = books.reduce((sum, b) => sum + b.price * b.sales, 0);
+
+  // 베스트셀러 Top 5
+  const bestSellers = [...books].sort((a, b) => b.sales - a.sales).slice(0, 5);
+
+  // 가격대별 판매 분포
+  const priceRanges = {
+    under10000: 0,
+    _10000to15000: 0,
+    _15000to20000: 0,
+    over20000: 0,
+  };
+
+  books.forEach((book) => {
+    if (book.price < 10000) priceRanges.under10000 += book.sales;
+    else if (book.price < 15000) priceRanges._10000to15000 += book.sales;
+    else if (book.price < 20000) priceRanges._15000to20000 += book.sales;
+    else priceRanges.over20000 += book.sales;
+  });
 
   res.json({
     totalSales,
     totalBooks,
     totalRevenue,
     averageSalePerBook: (totalSales / totalBooks).toFixed(2),
+    bestSellers,
+    priceRanges,
   });
 };

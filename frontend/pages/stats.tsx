@@ -11,6 +11,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+
 import Layout from '../components/Layout';
 import api from '../services/api';
 
@@ -40,17 +41,34 @@ export default function Stats() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    api
-      .get('/books/sales')
-      .then((res) => {
-        setStatsData(res.data);
+    const fetchStats = async () => {
+      try {
+        const response = await api.get('/books/sales');
+
+        // 안전한 데이터 처리
+        const data = response.data || {};
+        setStatsData({
+          totalSales: data.totalSales || 0,
+          totalBooks: data.totalBooks || 0,
+          totalRevenue: data.totalRevenue || 0,
+          averageSalePerBook: data.averageSalePerBook || '0',
+          bestSellers: data.bestSellers || [],
+          priceRanges: data.priceRanges || {
+            under10000: 0,
+            _10000to15000: 0,
+            _15000to20000: 0,
+            over20000: 0,
+          },
+        });
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
-        setError('통계 데이터를 불러오는데 실패했습니다.');
+        setError('통계 데이터를 불러오는 데 실패했습니다.');
         setLoading(false);
-      });
+      }
+    };
+
+    fetchStats();
   }, []);
 
   // 가격대별 판매 분포 데이터 변환
