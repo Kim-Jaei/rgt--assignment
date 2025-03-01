@@ -86,12 +86,16 @@
 ---
 
 ## 시스템 아키텍처
-```mermaid
-graph LR
-    A[Next.js (Vercel)] -->|HTTP| B[Express Server (Heroku)]
-    B -->|JSON Response| A
-    A -->|User Access| C[Browser]
-```
++----------------+        +------------------+
+| Next.js        | -----> | Express Server   |
+| (Vercel)       | <----- | (Heroku)         |
++----------------+        +------------------+
+^
+|
+v
++----------------+
+| Browser        |
++----------------+
 
 프론트엔드(Vercel): 정적 파일 + SSR(Next.js)  
 백엔드(Heroku): Node.js/Express 서버  
