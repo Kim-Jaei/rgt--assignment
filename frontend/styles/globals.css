@@ -514,6 +514,66 @@ body {
   background-color: #c0392b;
 }
 
+/* 공통 컨테이너 스타일 */
+.book-form-container,
+.book-detail-container {
+  max-width: 600px;
+  margin: 32px auto; /* 화면 중앙 */
+  padding: 24px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* 타이틀 */
+.book-form-container h2,
+.book-detail-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+/* 폼 스타일 */
+.book-form .form-group {
+  margin-bottom: 16px;
+}
+
+.book-form .form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.book-form .form-group input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* 버튼 */
+.submit-button {
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #005bb5;
+}
+
+/* 메시지 */
+.error-message {
+  color: red;
+  margin-bottom: 16px;
+}
+
+.success-message {
+  color: green;
+  margin-bottom: 16px;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .header-content {

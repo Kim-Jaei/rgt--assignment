@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import React from 'react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,14 +13,24 @@ const Layout: React.FC<LayoutProps> = ({ children, title = '재이서점' }) => 
       <Head>
         <title>{title}</title>
         <meta name="description" content="재이서점 애플리케이션" />
-        <link rel="icon" href="data:;base64,=" /> {/* favicon 404 방지 */}
+        {/* favicon 404 방지용 (임시 데이터 URI) */}
+        <link rel="icon" href="data:;base64,=" />
       </Head>
 
-      <header className="header">
+      {/* 헤더 영역 */}
+      <header
+        className="header"
+        style={{ padding: '16px', background: '#eee' }}
+      >
         <div className="header-content">
           <h1 className="site-title">
-            <Link href="/" className="site-title-link">
-              📚 재이서점
+            {/* 로고/타이틀 클릭 시 홈('/')으로 이동 */}
+            <Link
+              href="/"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+              className="site-title-link"
+            >
+              📚 {title}
             </Link>
           </h1>
           <nav className="main-nav">
@@ -44,9 +55,16 @@ const Layout: React.FC<LayoutProps> = ({ children, title = '재이서점' }) => 
         </div>
       </header>
 
-      <main className="main-content">{children}</main>
+      {/* 메인 콘텐츠 영역 */}
+      <main className="main-content" style={{ margin: '16px' }}>
+        {children}
+      </main>
 
-      <footer className="footer">
+      {/* 푸터 영역 */}
+      <footer
+        className="footer"
+        style={{ textAlign: 'center', padding: '16px', background: '#eee' }}
+      >
         <div className="footer-content">
           <p>
             &copy; {new Date().getFullYear()} 재이서점. All rights reserved.

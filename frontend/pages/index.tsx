@@ -1,67 +1,54 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
-import Layout from '../components/Layout';
-import BookCard from '../components/BookCard';
 import { Book } from '../types/Book';
 
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // 검색, 필터, 정렬
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [minPrice, setMinPrice] = useState<number | ''>('');
   const [maxPrice, setMaxPrice] = useState<number | ''>('');
-  const [sortBy, setSortBy] = useState<string>('title');
+  const [sortBy, setSortBy] = useState('title');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const fetchBooks = async () => {
     setLoading(true);
     try {
+      // 쿼리 파라미터 구성
       const params = new URLSearchParams();
       if (searchTerm) params.append('search', searchTerm);
       if (minPrice !== '') params.append('minPrice', minPrice.toString());
       if (maxPrice !== '') params.append('maxPrice', maxPrice.toString());
       params.append('sortBy', sortBy);
       params.append('order', sortOrder);
-
-      // 프론트에서 직접 슬라이싱
       params.append('page', currentPage.toString());
-      params.append('limit', '10'); // 1페이지당 10개
+      params.append('limit', '10'); // 1페이지에 10개씩
 
+      // API 호출
       const res = await api.get(`/books?${params.toString()}`);
 
-      if (res.data && Array.isArray(res.data.books)) {
-        const allBooks = res.data.books;
-        // 백엔드가 내려주는 전체 개수 (res.data.total) 사용
-        const totalCount = res.data.total || allBooks.length;
-
-        // 페이지 개수 계산
-        const pageCount = Math.ceil(totalCount / 10);
-        setTotalPages(pageCount);
-
-        // 실제로 현재 페이지에 보여줄 책들만 slice
-        const startIndex = (currentPage - 1) * 10;
-        const endIndex = currentPage * 10;
-        const pageBooks = allBooks.slice(startIndex, endIndex);
-        setBooks(pageBooks);
-      } else if (Array.isArray(res.data)) {
-        const allBooks = res.data;
-        const totalCount = allBooks.length;
-        const pageCount = Math.ceil(totalCount / 10);
-        setTotalPages(pageCount);
-
-        const startIndex = (currentPage - 1) * 10;
-        const endIndex = currentPage * 10;
-        const pageBooks = allBooks.slice(startIndex, endIndex);
-        setBooks(pageBooks);
+      // 백엔드 응답이 { total: number, books: Book[] } 형태라고 가정
+      if (
+        res.data &&
+        Array.isArray(res.data.books) &&
+        typeof res.data.total === 'number'
+      ) {
+        setBooks(res.data.books);
+        const totalCount = res.data.total; // 필터 후 전체 개수
+        setTotalPages(Math.ceil(totalCount / 10));
       } else {
-        console.warn('Unexpected API response format:', res.data);
+        // 혹시 예외적인 응답이 온 경우
         setBooks([]);
         setTotalPages(1);
+        console.warn('Unexpected API response format:', res.data);
       }
-
       setError(null);
     } catch (err) {
       console.error(err);
@@ -73,10 +60,12 @@ export default function Home() {
     }
   };
 
+  // currentPage, sortBy, sortOrder, 검색 등등 바뀔 때마다 새로 API 호출
   useEffect(() => {
     fetchBooks();
   }, [currentPage, sortBy, sortOrder]);
 
+  // 검색 버튼 클릭 시 1페이지부터 다시 검색
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
@@ -84,112 +73,96 @@ export default function Home() {
   };
 
   return (
-    <Layout title="재이 서점">
-      <div className="filters-container">
-        <form onSubmit={handleSearch} className="search-form">
-          <input
-            type="text"
-            placeholder="제목 또는 저자 검색"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-          <div className="price-filters">
-            <input
-              type="number"
-              placeholder="최소 가격"
-              value={minPrice}
-              onChange={(e) =>
-                setMinPrice(e.target.value ? Number(e.target.value) : '')
-              }
-              className="price-input"
-            />
-            <span>~</span>
-            <input
-              type="number"
-              placeholder="최대 가격"
-              value={maxPrice}
-              onChange={(e) =>
-                setMaxPrice(e.target.value ? Number(e.target.value) : '')
-              }
-              className="price-input"
-            />
-          </div>
-          <button type="submit" className="search-button">
-            검색
-          </button>
-        </form>
+    <div>
+      {/* 검색/필터 폼 */}
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          placeholder="제목/저자 검색"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="최소 가격"
+          value={minPrice}
+          onChange={(e) =>
+            setMinPrice(e.target.value ? Number(e.target.value) : '')
+          }
+        />
+        <input
+          type="number"
+          placeholder="최대 가격"
+          value={maxPrice}
+          onChange={(e) =>
+            setMaxPrice(e.target.value ? Number(e.target.value) : '')
+          }
+        />
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <option value="title">제목</option>
+          <option value="author">저자</option>
+          <option value="price">가격</option>
+          <option value="sales">판매량</option>
+        </select>
+        <button
+          type="button"
+          onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+        >
+          {sortOrder === 'asc' ? '오름차순' : '내림차순'}
+        </button>
+        <button type="submit">검색</button>
+      </form>
 
-        <div className="sort-controls">
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="sort-select"
-          >
-            <option value="title">제목</option>
-            <option value="author">저자</option>
-            <option value="price">가격</option>
-            <option value="sales">판매량</option>
-          </select>
-          <button
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="sort-direction"
-          >
-            {sortOrder === 'asc' ? '오름차순 ↑' : '내림차순 ↓'}
-          </button>
-        </div>
-      </div>
+      {/* 로딩/에러/결과 */}
+      {loading && <div>로딩 중...</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
 
-      {loading && <div className="loading-spinner">로딩 중...</div>}
-      {error && <div className="error-message">{error}</div>}
-
-      {!loading && !error && books.length > 0 ? (
+      {!loading && !error && (
         <>
-          <div className="book-grid">
+          {/* 책 목록 */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
             {books.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <div key={book.id}>
+                <h3>{book.title}</h3>
+                <p>{book.author}</p>
+                <p>{book.price}원</p>
+                <p>판매량: {book.sales}</p>
+              </div>
             ))}
           </div>
 
-          <div className="pagination">
+          {/* 페이지네이션 */}
+          <div style={{ marginTop: '16px' }}>
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="pagination-button"
             >
               이전
             </button>
 
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              const pageNum = Math.min(
-                Math.max(currentPage - 2 + i, 1),
-                totalPages
-              );
-              return (
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+              (pageNum) => (
                 <button
                   key={pageNum}
                   onClick={() => setCurrentPage(pageNum)}
-                  className={`pagination-button ${
-                    currentPage === pageNum ? 'active' : ''
-                  }`}
+                  style={{
+                    fontWeight: currentPage === pageNum ? 'bold' : 'normal',
+                  }}
                 >
                   {pageNum}
                 </button>
-              );
-            })}
+              )
+            )}
 
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="pagination-button"
             >
               다음
             </button>
           </div>
         </>
-      ) : (
-        <p className="no-results">책이 없습니다.</p>
       )}
-    </Layout>
+    </div>
   );
 }

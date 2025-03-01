@@ -1,32 +1,37 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import Layout from '../../components/Layout';
 import api from '../../services/api';
+import { useRouter } from 'next/router';
 
 export default function NewBookPage() {
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [price, setPrice] = useState('');
   const [sales, setSales] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
-      await api.post('/books/new', {
+      await api.post('/books', {
         title,
         author,
         price: Number(price),
         sales: Number(sales) || 0,
       });
-
-      // 성공 시 홈페이지로 리다이렉트
-      router.push('/');
+      setSuccess('책이 성공적으로 등록되었습니다!');
+      // 등록 후 폼 초기화
+      setTitle('');
+      setAuthor('');
+      setPrice('');
+      setSales('');
     } catch (err) {
       setError('책 등록에 실패했습니다.');
       console.error(err);
@@ -40,6 +45,8 @@ export default function NewBookPage() {
       <div className="book-form-container">
         <h2>새 책 등록</h2>
         {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
+
         <form onSubmit={handleSubmit} className="book-form">
           <div className="form-group">
             <label htmlFor="title">제목</label>
@@ -51,6 +58,7 @@ export default function NewBookPage() {
               required
             />
           </div>
+
           <div className="form-group">
             <label htmlFor="author">저자</label>
             <input
@@ -61,6 +69,7 @@ export default function NewBookPage() {
               required
             />
           </div>
+
           <div className="form-group">
             <label htmlFor="price">가격</label>
             <input
@@ -71,8 +80,9 @@ export default function NewBookPage() {
               required
             />
           </div>
+
           <div className="form-group">
-            <label htmlFor="sales">판매량</label>
+            <label htmlFor="sales">판매량 (선택)</label>
             <input
               type="number"
               id="sales"
@@ -80,8 +90,9 @@ export default function NewBookPage() {
               onChange={(e) => setSales(e.target.value)}
             />
           </div>
-          <button type="submit" disabled={loading} className="submit-button">
-            {loading ? '등록 중...' : '책 등록'}
+
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? '등록 중...' : '등록하기'}
           </button>
         </form>
       </div>
