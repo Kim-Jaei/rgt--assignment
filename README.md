@@ -1,4 +1,4 @@
-# 📚 재이서점 (RGT Bookstore)
+# 📚 재이서점 (JAEI Bookstore)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
