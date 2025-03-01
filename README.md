@@ -423,7 +423,7 @@ export default {
 ---
 
 ## 시연 영상
-<video src="./rgt--assignment.mkv" controls="controls" style="max-width: 700px;">
+<video src="./rgt--assignment.mp4" controls="controls" style="max-width: 700px;">
 </video>
 
 - 메인: 책 목록 - 검색/필터/정렬 & 페이지네이션
