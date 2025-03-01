@@ -436,7 +436,7 @@ export default {
 - Node.js: v16.x
 - npm: v8.x
 - IDE: VSCode
-- Browser: Chrome, Firefox
+- Browser: Chrome
 
 ---
 
