@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import api from '../services/api';
 import Layout from '../components/Layout';
 import BookCard from '../components/BookCard';
@@ -27,22 +26,31 @@ export default function Home() {
       params.append('sortBy', sortBy);
       params.append('order', sortOrder);
       params.append('page', currentPage.toString());
-      params.append('limit', '12'); // 한 페이지당 12개
+      params.append('limit', '12'); // 한 페이지에 12개 표시
 
       const res = await api.get(`/books?${params.toString()}`);
 
-      // API 응답 데이터 검증
-      if (!res.data || !Array.isArray(res.data.books)) {
-        throw new Error('API 응답 형식이 올바르지 않습니다.');
+      // 응답 데이터 구조 확인 및 처리
+      if (Array.isArray(res.data)) {
+        // 데이터가 배열인 경우 (기본 API 응답)
+        setBooks(res.data);
+        setTotalPages(Math.ceil(res.data.length / 12));
+      } else if (res.data && res.data.books) {
+        // 데이터가 객체이고 books 속성이 있는 경우 (페이지네이션 API 응답)
+        setBooks(res.data.books);
+        setTotalPages(res.data.totalPages || 1);
+      } else {
+        // 데이터 형식이 예상과 다른 경우
+        setBooks([]);
+        setTotalPages(1);
+        console.warn('Unexpected API response format:', res.data);
       }
 
-      setBooks(res.data.books); // 항상 배열을 설정하여 오류 방지
-      setTotalPages(res.data.totalPages || 1);
       setError(null);
     } catch (err) {
-      console.error('책 데이터를 불러오는 중 오류 발생:', err);
+      console.error(err);
       setError('책 목록을 불러오는 데 실패했습니다.');
-      setBooks([]); // 오류 발생 시 빈 배열 설정
+      setBooks([]);
       setTotalPages(1);
     } finally {
       setLoading(false);
@@ -119,17 +127,13 @@ export default function Home() {
       {loading && <div className="loading-spinner">로딩 중...</div>}
       {error && <div className="error-message">{error}</div>}
 
-      {!loading && !error && (
+      {!loading && !error && books.length > 0 ? (
         <>
-          {Array.isArray(books) && books.length > 0 ? (
-            <div className="book-grid">
-              {books.map((book) => (
-                <BookCard key={book.id} book={book} />
-              ))}
-            </div>
-          ) : (
-            <p className="no-results">책이 없습니다.</p>
-          )}
+          <div className="book-grid">
+            {books.map((book) => (
+              <BookCard key={book.id} book={book} />
+            ))}
+          </div>
 
           <div className="pagination">
             <button
@@ -167,6 +171,8 @@ export default function Home() {
             </button>
           </div>
         </>
+      ) : (
+        <p className="no-results">책이 없습니다.</p>
       )}
     </Layout>
   );

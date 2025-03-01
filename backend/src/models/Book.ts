@@ -5,3 +5,12 @@ export interface Book {
   price: number;
   sales: number; // 판매 수량
 }
+
+import {
+  getBooks,
+  getBookById,
+  createBook,
+  updateBook,
+  deleteBook,
+  getSalesStats,
+} from '../controllers/booksController';

@@ -254,50 +254,16 @@ let books = [
     },
     { id: 53, title: '방구석 미술관', author: '조원재', price: 19800, sales: 87 },
 ];
-// 책 목록 조회
+// 책 목록 조회 API
 const getBooks = (req, res) => {
-    const { search, minPrice, maxPrice, sortBy, order } = req.query;
-    let filteredBooks = [...books];
-    // 검색 필터링 (제목 or 저자)
-    if (search) {
-        const searchTerm = String(search).toLowerCase();
-        filteredBooks = filteredBooks.filter((book) => book.title.toLowerCase().includes(searchTerm) ||
-            book.author.toLowerCase().includes(searchTerm));
-    }
-    // 가격 필터링
-    if (minPrice) {
-        filteredBooks = filteredBooks.filter((book) => book.price >= Number(minPrice));
-    }
-    if (maxPrice) {
-        filteredBooks = filteredBooks.filter((book) => book.price <= Number(maxPrice));
-    }
-    // 정렬 기능
-    if (sortBy) {
-        const sortField = String(sortBy);
-        const sortOrder = order === 'desc' ? -1 : 1;
-        filteredBooks.sort((a, b) => {
-            if (a[sortField] < b[sortField])
-                return -1 * sortOrder;
-            if (a[sortField] > b[sortField])
-                return 1 * sortOrder;
-            return 0;
-        });
-    }
-    // 페이지네이션 추가
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const paginatedBooks = filteredBooks.slice(startIndex, endIndex);
+    console.log('📌 현재 서버의 books 데이터:', books); // 디버깅용 콘솔
     res.json({
-        total: filteredBooks.length,
-        totalPages: Math.ceil(filteredBooks.length / limit),
-        currentPage: page,
-        books: paginatedBooks,
+        total: books.length,
+        books,
     });
 };
 exports.getBooks = getBooks;
-// 책 상세 조회
+// 책 상세 조회 API
 const getBookById = (req, res) => {
     const id = parseInt(req.params.id, 10);
     const book = books.find((b) => b.id === id);
@@ -307,7 +273,7 @@ const getBookById = (req, res) => {
     res.json(book);
 };
 exports.getBookById = getBookById;
-// 책 추가
+// 책 추가 API
 const createBook = (req, res) => {
     const { title, author, price, sales } = req.body;
     const newBook = {
@@ -321,14 +287,14 @@ const createBook = (req, res) => {
     res.status(201).json(newBook);
 };
 exports.createBook = createBook;
-// 책 수정
+// 책 수정 API
 const updateBook = (req, res) => {
     const id = parseInt(req.params.id, 10);
-    const { title, author, price, sales } = req.body;
     const index = books.findIndex((b) => b.id === id);
     if (index < 0) {
         return res.status(404).json({ error: 'Book not found' });
     }
+    const { title, author, price, sales } = req.body;
     books[index] = {
         ...books[index],
         title: title ?? books[index].title,
@@ -339,7 +305,7 @@ const updateBook = (req, res) => {
     res.json(books[index]);
 };
 exports.updateBook = updateBook;
-// 책 삭제
+// 책 삭제 API
 const deleteBook = (req, res) => {
     const id = parseInt(req.params.id, 10);
     const index = books.findIndex((b) => b.id === id);
@@ -350,39 +316,16 @@ const deleteBook = (req, res) => {
     res.status(204).send();
 };
 exports.deleteBook = deleteBook;
-// 모든 책의 판매 수량 합계
-// backend/src/controllers/booksController.ts
+// 판매 통계 API
 const getSalesStats = (req, res) => {
-    // 기본 통계
     const totalSales = books.reduce((sum, b) => sum + b.sales, 0);
     const totalBooks = books.length;
     const totalRevenue = books.reduce((sum, b) => sum + b.price * b.sales, 0);
-    // 베스트셀러 Top 5
-    const bestSellers = [...books].sort((a, b) => b.sales - a.sales).slice(0, 5);
-    // 가격대별 판매 분포
-    const priceRanges = {
-        under10000: 0,
-        _10000to15000: 0,
-        _15000to20000: 0,
-        over20000: 0,
-    };
-    books.forEach((book) => {
-        if (book.price < 10000)
-            priceRanges.under10000 += book.sales;
-        else if (book.price < 15000)
-            priceRanges._10000to15000 += book.sales;
-        else if (book.price < 20000)
-            priceRanges._15000to20000 += book.sales;
-        else
-            priceRanges.over20000 += book.sales;
-    });
     res.json({
         totalSales,
         totalBooks,
         totalRevenue,
         averageSalePerBook: (totalSales / totalBooks).toFixed(2),
-        bestSellers,
-        priceRanges,
     });
 };
 exports.getSalesStats = getSalesStats;
