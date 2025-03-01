@@ -18,18 +18,42 @@ const Layout: React.FC<LayoutProps> = ({ children, title = '재이서점' }) => 
       <header className="header">
         <div className="header-content">
           <h1 className="site-title">
-            <Link href="/">📚 온라인 서점</Link>
+            <Link
+              href="/"
+              className="site-title-link"
+              style={{ color: 'white', textDecoration: 'none' }}
+            >
+              📚 온라인 서점
+            </Link>
           </h1>
           <nav className="main-nav">
             <ul>
               <li>
-                <Link href="/">홈</Link>
+                <Link
+                  href="/"
+                  className="nav-link"
+                  style={{ color: 'white', textDecoration: 'none' }}
+                >
+                  홈
+                </Link>
               </li>
               <li>
-                <Link href="/stats">판매 통계</Link>
+                <Link
+                  href="/stats"
+                  className="nav-link"
+                  style={{ color: 'white', textDecoration: 'none' }}
+                >
+                  판매 통계
+                </Link>
               </li>
               <li>
-                <Link href="/books/new">책 등록</Link>
+                <Link
+                  href="/books/new"
+                  className="nav-link"
+                  style={{ color: 'white', textDecoration: 'none' }}
+                >
+                  책 등록
+                </Link>
               </li>
             </ul>
           </nav>

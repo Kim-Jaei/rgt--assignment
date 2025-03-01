@@ -30,12 +30,29 @@ export default function Home() {
       params.append('limit', '12'); // 한 페이지에 12개 표시
 
       const res = await api.get(`/books?${params.toString()}`);
-      setBooks(res.data.books);
-      setTotalPages(res.data.totalPages);
+
+      // 응답 데이터 구조 확인 및 처리
+      if (Array.isArray(res.data)) {
+        // 데이터가 배열인 경우 (기본 API 응답)
+        setBooks(res.data);
+        setTotalPages(Math.ceil(res.data.length / 12));
+      } else if (res.data && res.data.books) {
+        // 데이터가 객체이고 books 속성이 있는 경우 (페이지네이션 API 응답)
+        setBooks(res.data.books);
+        setTotalPages(res.data.totalPages || 1);
+      } else {
+        // 데이터 형식이 예상과 다른 경우
+        setBooks([]);
+        setTotalPages(1);
+        console.warn('Unexpected API response format:', res.data);
+      }
+
       setError(null);
     } catch (err) {
       console.error(err);
       setError('책 목록을 불러오는 데 실패했습니다.');
+      setBooks([]);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
