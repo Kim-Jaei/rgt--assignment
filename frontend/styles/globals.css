@@ -333,10 +333,11 @@ body {
 }
 
 .stats-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  display: flex;
   gap: 1.5rem;
   margin-bottom: 2.5rem;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .stats-card {
@@ -345,6 +346,9 @@ body {
   border-radius: 8px;
   border-left: 4px solid var(--primary-color);
   text-align: center;
+  min-width: 220px;
+  flex: 1;
+  max-width: 300px;
 }
 
 .stats-number {
@@ -471,10 +475,9 @@ body {
   background-color: #c0392b;
 }
 
-/* 등록/상세 페이지용 컨테이너 (공통) */
 .book-form-container,
 .book-detail-container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 32px auto;
   padding: 24px;
   background-color: #fff;
@@ -528,7 +531,9 @@ body {
     height: 300px;
   }
   .charts-container {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
   }
 }
 
