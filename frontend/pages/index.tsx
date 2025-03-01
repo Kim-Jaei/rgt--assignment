@@ -26,26 +26,26 @@ export default function Home() {
       params.append('sortBy', sortBy);
       params.append('order', sortOrder);
       params.append('page', currentPage.toString());
-      params.append('limit', '12'); // 한 페이지에 12개 표시
+      params.append('limit', '10'); // 한 페이지에 10개 표시
 
       const res = await api.get(`/books?${params.toString()}`);
 
-      // 응답 데이터 구조 확인 및 처리
       if (Array.isArray(res.data)) {
-        // 데이터가 배열인 경우 (기본 API 응답)
-        setBooks(res.data);
-        setTotalPages(Math.ceil(res.data.length / 12));
+        const allBooks = res.data;
+        setTotalPages(Math.ceil(allBooks.length / 10));
+        const paginatedBooks = allBooks.slice(
+          (currentPage - 1) * 10,
+          currentPage * 10
+        );
+        setBooks(paginatedBooks);
       } else if (res.data && res.data.books) {
-        // 데이터가 객체이고 books 속성이 있는 경우 (페이지네이션 API 응답)
         setBooks(res.data.books);
         setTotalPages(res.data.totalPages || 1);
       } else {
-        // 데이터 형식이 예상과 다른 경우
+        console.warn('Unexpected API response format:', res.data);
         setBooks([]);
         setTotalPages(1);
-        console.warn('Unexpected API response format:', res.data);
       }
-
       setError(null);
     } catch (err) {
       console.error(err);
