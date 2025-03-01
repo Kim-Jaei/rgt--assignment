@@ -1,5 +1,6 @@
-/* styles/globals.css */
-/* 기본 리셋 및 폰트 */
+/* ======================== */
+/* 1. 기본 리셋 & 전역 스타일 */
+/* ======================== */
 * {
   margin: 0;
   padding: 0;
@@ -25,7 +26,9 @@ body {
   color: var(--text-color);
 }
 
-/* 레이아웃 */
+/* ======================== */
+/* 2. 레이아웃 구조 */
+/* ======================== */
 .layout {
   display: flex;
   flex-direction: column;
@@ -98,6 +101,7 @@ body {
   text-align: center;
 }
 
+/* 페이지 섹션 타이틀 */
 .page-title {
   font-size: 2rem;
   margin-bottom: 2rem;
@@ -106,6 +110,9 @@ body {
   padding-bottom: 0.5rem;
 }
 
+/* ======================== */
+/* 3. 책 카드(Grid) 스타일 */
+/* ======================== */
 .book-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -189,6 +196,9 @@ body {
   font-size: 0.9rem;
 }
 
+/* ======================== */
+/* 4. 검색/필터 영역 */
+/* ======================== */
 .filters-container {
   background: white;
   padding: 1.5rem;
@@ -243,6 +253,7 @@ body {
   background-color: var(--primary-dark);
 }
 
+/* 정렬(소트) */
 .sort-controls {
   display: flex;
   gap: 1rem;
@@ -264,6 +275,9 @@ body {
   cursor: pointer;
 }
 
+/* ======================== */
+/* 5. 페이지네이션 */
+/* ======================== */
 .pagination {
   display: flex;
   justify-content: center;
@@ -296,7 +310,9 @@ body {
   cursor: not-allowed;
 }
 
-/* 로딩 및 에러 */
+/* ======================== */
+/* 6. 로딩 & 에러 메시지 */
+/* ======================== */
 .loading-spinner {
   text-align: center;
   padding: 2rem;
@@ -304,13 +320,23 @@ body {
   color: #777;
 }
 
+/* 에러/성공 메시지 (중복 제거 & 통합) */
 .error-message {
   background-color: #ffebee;
   color: #c62828;
   padding: 1rem;
   border-radius: 4px;
-  margin: 1rem 0;
+  margin: 16px 0;
   border-left: 4px solid #c62828;
+}
+
+.success-message {
+  background-color: #e8f5e9;
+  color: var(--success-color);
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 16px 0;
+  border-left: 4px solid var(--success-color);
 }
 
 .no-results {
@@ -320,6 +346,9 @@ body {
   font-size: 1.1rem;
 }
 
+/* ======================== */
+/* 7. 통계/차트 스타일 (stats) */
+/* ======================== */
 .stats-container {
   background: white;
   padding: 2rem;
@@ -367,6 +396,9 @@ body {
   color: var(--primary-dark);
 }
 
+/* ======================== */
+/* 8. 책 상세(Detail) 페이지 */
+/* ======================== */
 .book-detail {
   display: grid;
   grid-template-columns: 300px 1fr;
@@ -432,6 +464,9 @@ body {
   color: var(--primary-color);
 }
 
+/* ======================== */
+/* 9. 폼 (등록/수정) 스타일 */
+/* ======================== */
 .book-form {
   display: flex;
   flex-direction: column;
@@ -444,6 +479,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin-bottom: 16px; /* 중복 제거 */
 }
 
 .form-label {
@@ -514,67 +550,41 @@ body {
   background-color: #c0392b;
 }
 
-/* 공통 컨테이너 스타일 */
+/* 등록/상세 페이지용 컨테이너 (공통) */
 .book-form-container,
 .book-detail-container {
   max-width: 600px;
-  margin: 32px auto; /* 화면 중앙 */
+  margin: 32px auto;
   padding: 24px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
 
-/* 타이틀 */
 .book-form-container h2,
 .book-detail-container h2 {
   font-size: 1.5rem;
   margin-bottom: 16px;
 }
 
-/* 폼 스타일 */
-.book-form .form-group {
-  margin-bottom: 16px;
-}
-
-.book-form .form-group label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.book-form .form-group input {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-}
-
-/* 버튼 */
 .submit-button {
-  background-color: #0070f3;
+  background-color: var(--primary-color);
   color: #fff;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
 }
 
 .submit-button:hover {
-  background-color: #005bb5;
+  background-color: var(--primary-dark);
 }
 
-/* 메시지 */
-.error-message {
-  color: red;
-  margin-bottom: 16px;
-}
-
-.success-message {
-  color: green;
-  margin-bottom: 16px;
-}
-
-/* 반응형 디자인 */
+/* ======================== */
+/* 10. 반응형 디자인 */
+/* ======================== */
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
