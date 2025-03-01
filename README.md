@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > **온라인 서점**으로, 책 목록 조회, 판매 통계, 책 등록, 책 삭제 등의 기능을 제공합니다.  
-> 프론트엔드는 **Next.js (TypeScript)**, 백엔드는 **Node.js(Express)**로 구현하였으며,  
+> 프론트엔드는 **Next.js (TypeScript)**, 백엔드는 **Node.js(Express)**로 구현하였으며
 > **Heroku**와 **Vercel**을 사용해 배포했습니다.
 
 <p align="center">
@@ -26,7 +26,6 @@
 9. [시연 영상/스크린샷](#시연-영상스크린샷)  
 10. [개발 환경](#개발-환경)  
 11. [폴더 구조](#폴더-구조)  
-12. [라이선스](#라이선스)  
 
 ---
 
@@ -470,9 +469,3 @@ rgt--assignment/
  ┃ ┣ package.json
  ┗ README.md      # 본 문서
 ```
-
----
-
-## 라이선스
-이 프로젝트는 MIT License를 따릅니다.  
-자세한 내용은 LICENSE 파일을 참조하세요.
