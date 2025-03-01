@@ -27,31 +27,22 @@ export default function Home() {
       params.append('sortBy', sortBy);
       params.append('order', sortOrder);
       params.append('page', currentPage.toString());
-      params.append('limit', '12'); // 한 페이지에 12개 표시
+      params.append('limit', '12'); // 한 페이지당 12개
 
       const res = await api.get(`/books?${params.toString()}`);
 
-      // 응답 데이터 구조 확인 및 처리
-      if (Array.isArray(res.data)) {
-        // 데이터가 배열인 경우 (기본 API 응답)
-        setBooks(res.data);
-        setTotalPages(Math.ceil(res.data.length / 12));
-      } else if (res.data && res.data.books) {
-        // 데이터가 객체이고 books 속성이 있는 경우 (페이지네이션 API 응답)
-        setBooks(res.data.books);
-        setTotalPages(res.data.totalPages || 1);
-      } else {
-        // 데이터 형식이 예상과 다른 경우
-        setBooks([]);
-        setTotalPages(1);
-        console.warn('Unexpected API response format:', res.data);
+      // API 응답 데이터 검증
+      if (!res.data || !Array.isArray(res.data.books)) {
+        throw new Error('API 응답 형식이 올바르지 않습니다.');
       }
 
+      setBooks(res.data.books); // 항상 배열을 설정하여 오류 방지
+      setTotalPages(res.data.totalPages || 1);
       setError(null);
     } catch (err) {
-      console.error(err);
+      console.error('책 데이터를 불러오는 중 오류 발생:', err);
       setError('책 목록을 불러오는 데 실패했습니다.');
-      setBooks([]);
+      setBooks([]); // 오류 발생 시 빈 배열 설정
       setTotalPages(1);
     } finally {
       setLoading(false);
@@ -130,14 +121,14 @@ export default function Home() {
 
       {!loading && !error && (
         <>
-          {books.length === 0 ? (
-            <p className="no-results">검색 결과가 없습니다.</p>
-          ) : (
+          {Array.isArray(books) && books.length > 0 ? (
             <div className="book-grid">
               {books.map((book) => (
                 <BookCard key={book.id} book={book} />
               ))}
             </div>
+          ) : (
+            <p className="no-results">책이 없습니다.</p>
           )}
 
           <div className="pagination">
@@ -150,7 +141,6 @@ export default function Home() {
             </button>
 
             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              // 현재 페이지 중심으로 페이지 버튼 표시
               const pageNum = Math.min(
                 Math.max(currentPage - 2 + i, 1),
                 totalPages

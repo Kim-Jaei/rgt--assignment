@@ -305,12 +305,11 @@ export const getBooks = (req: Request, res: Response) => {
   const paginatedBooks = filteredBooks.slice(startIndex, endIndex);
 
   res.json({
-    total: filteredBooks.length,
-    totalPages: Math.ceil(filteredBooks.length / limit),
+    total: filteredBooks?.length ?? 0,
+    totalPages: Math.ceil((filteredBooks?.length ?? 1) / limit),
     currentPage: page,
-    books: paginatedBooks,
+    books: paginatedBooks ?? [],
   });
-};
 
 // 책 상세 조회
 export const getBookById = (req: Request, res: Response) => {

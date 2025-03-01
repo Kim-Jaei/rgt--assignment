@@ -7,6 +7,10 @@ interface BookCardProps {
 }
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
+  if (!book) {
+    return null; // book이 없으면 렌더링하지 않음
+  }
+
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -48,5 +52,4 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
     </Link>
   );
 };
-
 export default BookCard;
