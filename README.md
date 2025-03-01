@@ -87,10 +87,10 @@
 
 ## 시스템 아키텍처
 ```mermaid
-flowchart LR
+graph LR
     A[Next.js (Vercel)] -->|HTTP| B[Express Server (Heroku)]
     B -->|JSON Response| A
-    A -->|User Access| Browser
+    A -->|User Access| C[Browser]
 ```
 
 프론트엔드(Vercel): 정적 파일 + SSR(Next.js)  
