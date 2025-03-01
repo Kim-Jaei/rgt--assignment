@@ -426,7 +426,7 @@ export default {
 **[🎬 시연 영상 보기](https://github.com/Kim-Jaei/rgt--assignment/raw/main/rgt--assignment.mkv)** (File Download)
 
 - 메인: 책 목록 - 검색/필터/정렬 & 페이지네이션
-- 판매 통계: 판매 수량, 총 매출액, 등록된 책, 책당 평균 판매량, 베스트셀러 Top 5, 가격대별 판매 분호
+- 판매 통계: 판매 수량, 총 매출액, 등록된 책, 책당 평균 판매량, 베스트셀러 Top 5, 가격대별 판매 분포
 - 책 등록: 새로운 도서 등록
 
 ---
