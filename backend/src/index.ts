@@ -16,8 +16,8 @@ app.get('/', (req, res) => {
   res.send('Hello from backend!');
 });
 
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 4000;
+const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, '0.0.0.0', function () {
-  console.log(`Backend running on http://localhost:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
 });

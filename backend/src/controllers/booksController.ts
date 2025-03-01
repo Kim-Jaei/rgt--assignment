@@ -257,7 +257,7 @@ let books: Book[] = [
 
 // 책 목록 조회 API
 export const getBooks = (req: Request, res: Response) => {
-  console.log('📌 현재 서버의 books 데이터:', books); // 디버깅용 콘솔
+  console.log('Book request received');
 
   res.json({
     total: books.length,
