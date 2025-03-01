@@ -30,6 +30,16 @@ export default function BookDetailPage() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!confirm('정말로 이 책을 삭제하시겠습니까?')) return;
+    try {
+      await api.delete(`/books/${id}`);
+      router.push('/');
+    } catch (err) {
+      alert('삭제에 실패했습니다.');
+    }
+  };
+
   if (loading) {
     return (
       <Layout title="책 상세 정보">
@@ -61,6 +71,13 @@ export default function BookDetailPage() {
         <p>
           <strong>판매량:</strong> {book.sales}
         </p>
+        <button
+          onClick={handleDelete}
+          className="danger-button"
+          style={{ marginTop: '1rem' }}
+        >
+          삭제
+        </button>
       </div>
     </Layout>
   );

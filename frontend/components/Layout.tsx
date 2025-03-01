@@ -18,9 +18,13 @@ const Layout: React.FC<LayoutProps> = ({ children, title = '재이서점' }) => 
       <header className="header">
         <div className="header-content">
           <h1 className="site-title">
-            <Link href="/" className="site-title-link">
+            <a
+              href="/"
+              className="site-title-link"
+              onClick={() => window.location.reload()}
+            >
               📚 재이서점
-            </Link>
+            </a>
           </h1>
           <nav className="main-nav">
             <ul>

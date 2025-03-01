@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
@@ -94,7 +95,10 @@ export default function Stats() {
             </div>
             <div className="stats-card">
               <h3>총 매출액</h3>
-              <p className="stats-number">
+              <p
+                className="stats-number"
+                style={{ whiteSpace: 'nowrap', fontSize: '1.5rem' }}
+              >
                 {statsData.totalRevenue.toLocaleString()}원
               </p>
             </div>
@@ -108,47 +112,55 @@ export default function Stats() {
             </div>
           </div>
           <div className="charts-container">
-            <div className="chart-section">
+            <div
+              className="chart-section"
+              style={{ width: '100%', height: 300 }}
+            >
               <h3>베스트셀러 Top 5</h3>
-              <BarChart
-                width={600}
-                height={300}
-                data={bestSellerData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="title" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="sales" fill="#8884d8" name="판매량" />
-              </BarChart>
-            </div>
-            <div className="chart-section">
-              <h3>가격대별 판매 분포</h3>
-              <PieChart width={400} height={300}>
-                <Pie
-                  data={priceRangeData}
-                  cx={200}
-                  cy={150}
-                  labelLine={true}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                  nameKey="name"
-                  label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={bestSellerData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
-                  {priceRangeData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="title" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="sales" fill="#8884d8" name="판매량" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div
+              className="chart-section"
+              style={{ width: '100%', height: 300 }}
+            >
+              <h3>가격대별 판매 분포</h3>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={priceRangeData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={true}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    nameKey="name"
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
+                  >
+                    {priceRangeData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
