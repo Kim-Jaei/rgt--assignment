@@ -9,15 +9,11 @@ const bookRoutes_1 = __importDefault(require("./routes/bookRoutes"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.use((req, res, next) => {
-    console.log(`요청: ${req.method} ${req.url}`);
-    next();
-});
 app.use('/api/books', bookRoutes_1.default);
 app.get('/', (req, res) => {
     res.send('Hello from backend!');
 });
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`Backend running on port ${PORT}`);
 });

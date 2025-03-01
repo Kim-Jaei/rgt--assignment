@@ -25,27 +25,43 @@ export default function Home() {
       if (maxPrice !== '') params.append('maxPrice', maxPrice.toString());
       params.append('sortBy', sortBy);
       params.append('order', sortOrder);
+
+      // 프론트에서 직접 슬라이싱
       params.append('page', currentPage.toString());
-      params.append('limit', '10'); // 한 페이지에 10개 표시
+      params.append('limit', '10'); // 1페이지당 10개
 
       const res = await api.get(`/books?${params.toString()}`);
 
-      if (Array.isArray(res.data)) {
+      if (res.data && Array.isArray(res.data.books)) {
+        const allBooks = res.data.books;
+        // 백엔드가 내려주는 전체 개수 (res.data.total) 사용
+        const totalCount = res.data.total || allBooks.length;
+
+        // 페이지 개수 계산
+        const pageCount = Math.ceil(totalCount / 10);
+        setTotalPages(pageCount);
+
+        // 실제로 현재 페이지에 보여줄 책들만 slice
+        const startIndex = (currentPage - 1) * 10;
+        const endIndex = currentPage * 10;
+        const pageBooks = allBooks.slice(startIndex, endIndex);
+        setBooks(pageBooks);
+      } else if (Array.isArray(res.data)) {
         const allBooks = res.data;
-        setTotalPages(Math.ceil(allBooks.length / 10));
-        const paginatedBooks = allBooks.slice(
-          (currentPage - 1) * 10,
-          currentPage * 10
-        );
-        setBooks(paginatedBooks);
-      } else if (res.data && res.data.books) {
-        setBooks(res.data.books);
-        setTotalPages(res.data.totalPages || 1);
+        const totalCount = allBooks.length;
+        const pageCount = Math.ceil(totalCount / 10);
+        setTotalPages(pageCount);
+
+        const startIndex = (currentPage - 1) * 10;
+        const endIndex = currentPage * 10;
+        const pageBooks = allBooks.slice(startIndex, endIndex);
+        setBooks(pageBooks);
       } else {
         console.warn('Unexpected API response format:', res.data);
         setBooks([]);
         setTotalPages(1);
       }
+
       setError(null);
     } catch (err) {
       console.error(err);

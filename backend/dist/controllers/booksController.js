@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSalesStats = exports.deleteBook = exports.updateBook = exports.createBook = exports.getBookById = exports.getBooks = void 0;
+// 임시로 사용할 책 데이터 (DB 없이 메모리에 저장)
 let books = [
     {
         id: 1,
@@ -254,16 +255,80 @@ let books = [
     },
     { id: 53, title: '방구석 미술관', author: '조원재', price: 19800, sales: 87 },
 ];
-// 책 목록 조회 API
+/**
+ * 책 목록 조회 API
+ * (검색, 필터, 정렬, 페이지네이션 적용)
+ */
 const getBooks = (req, res) => {
-    console.log('Book request received');
+    // 1) 쿼리 파라미터 받기
+    let { search, // 제목/저자 검색어
+    minPrice, // 최소 가격
+    maxPrice, // 최대 가격
+    sortBy = 'title', // 정렬 기준(title, author, price, sales)
+    order = 'asc', // 오름차순 asc / 내림차순 desc
+    page = '1', // 현재 페이지
+    limit = '10', // 페이지당 표시할 책 개수
+     } = req.query;
+    // 2) 숫자 변환 (문자열 -> number)
+    const currentPage = parseInt(page, 10) || 1;
+    const pageLimit = parseInt(limit, 10) || 10;
+    const min = parseInt(minPrice, 10) || 0;
+    const max = parseInt(maxPrice, 10) || Number.MAX_SAFE_INTEGER;
+    // 3) 원본 배열 복사 후 가공
+    let result = [...books];
+    // 3-1) 검색어 필터 (제목 혹은 저자에 search가 포함되어 있으면 통과)
+    if (search) {
+        const lowerSearch = search.toLowerCase();
+        result = result.filter((book) => book.title.toLowerCase().includes(lowerSearch) ||
+            book.author.toLowerCase().includes(lowerSearch));
+    }
+    // 3-2) 가격대 필터
+    result = result.filter((book) => book.price >= min && book.price <= max);
+    // 3-3) 정렬
+    result.sort((a, b) => {
+        let valA;
+        let valB;
+        switch (sortBy) {
+            case 'author':
+                valA = a.author;
+                valB = b.author;
+                break;
+            case 'price':
+                valA = a.price;
+                valB = b.price;
+                break;
+            case 'sales':
+                valA = a.sales;
+                valB = b.sales;
+                break;
+            case 'title':
+            default:
+                valA = a.title;
+                valB = b.title;
+                break;
+        }
+        // 오름차순/내림차순 비교
+        if (valA < valB)
+            return order === 'asc' ? -1 : 1;
+        if (valA > valB)
+            return order === 'asc' ? 1 : -1;
+        return 0;
+    });
+    // 3-4) 페이지네이션
+    const total = result.length; // 필터/정렬된 전체 결과 수
+    const startIndex = (currentPage - 1) * pageLimit;
+    const endIndex = startIndex + pageLimit;
+    const pageBooks = result.slice(startIndex, endIndex);
+    // 4) 최종 응답
     res.json({
-        total: books.length,
-        books,
+        total,
+        books: pageBooks, // 현재 페이지에 해당하는 책 목록
     });
 };
 exports.getBooks = getBooks;
-// 책 상세 조회 API
+/**
+ * 책 상세 조회 API
+ */
 const getBookById = (req, res) => {
     const id = parseInt(req.params.id, 10);
     const book = books.find((b) => b.id === id);
@@ -273,14 +338,16 @@ const getBookById = (req, res) => {
     res.json(book);
 };
 exports.getBookById = getBookById;
-// 책 추가 API
+/**
+ * 책 추가 API
+ */
 const createBook = (req, res) => {
     const { title, author, price, sales } = req.body;
     // 유효성 검사
     if (!title || !author || !price) {
         return res.status(400).json({ message: '필수 정보가 누락되었습니다.' });
     }
-    // 새 책 추가 (실제 운영에서는 데이터베이스 사용)
+    // 새 책 추가 (실제 운영환경에서는 DB에 INSERT)
     const newBook = {
         id: books.length + 1,
         title,
@@ -295,21 +362,26 @@ const createBook = (req, res) => {
     });
 };
 exports.createBook = createBook;
-// 책 수정 API
+/**
+ * 책 수정 API
+ */
 const updateBook = (req, res) => {
-    const bookId = parseInt(req.params.id);
+    const bookId = parseInt(req.params.id, 10);
     const { title, author, price } = req.body;
     const bookIndex = books.findIndex((book) => book.id === bookId);
     if (bookIndex === -1) {
         return res.status(404).json({ message: '책을 찾을 수 없습니다.' });
     }
+    // 기존 정보에 덮어쓰기
     books[bookIndex] = Object.assign(Object.assign({}, books[bookIndex]), { title: title || books[bookIndex].title, author: author || books[bookIndex].author, price: price || books[bookIndex].price });
     res.json(books[bookIndex]);
 };
 exports.updateBook = updateBook;
-// 책 삭제 API
+/**
+ * 책 삭제 API
+ */
 const deleteBook = (req, res) => {
-    const bookId = parseInt(req.params.id);
+    const bookId = parseInt(req.params.id, 10);
     const bookIndex = books.findIndex((book) => book.id === bookId);
     if (bookIndex === -1) {
         return res.status(404).json({ message: '책을 찾을 수 없습니다.' });
@@ -318,13 +390,17 @@ const deleteBook = (req, res) => {
     res.json({ message: '책이 성공적으로 삭제되었습니다.' });
 };
 exports.deleteBook = deleteBook;
-// 판매 통계 API
+/**
+ * 판매 통계 API
+ */
 const getSalesStats = (req, res) => {
-    // 기본
+    // 전체 판매량
     const totalSales = books.reduce((sum, b) => sum + b.sales, 0);
+    // 전체 책 개수
     const totalBooks = books.length;
+    // 총 매출(가격 * 판매량 합)
     const totalRevenue = books.reduce((sum, b) => sum + b.price * b.sales, 0);
-    // 베스트셀러 Top 5
+    // 베스트셀러 Top 5 (판매량 기준 내림차순 정렬 후 상위 5개)
     const bestSellers = [...books].sort((a, b) => b.sales - a.sales).slice(0, 5);
     // 가격대별 판매 분포
     const priceRanges = {
