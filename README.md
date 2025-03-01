@@ -18,7 +18,7 @@
 3. [기술 스택](#기술-스택)  
 4. [시스템 아키텍처](#시스템-아키텍처)  
 5. [설치 방법 (로컬)](#설치-방법-로컬)  
-6. [배포 (Heroku & Vercel)](#배포-heroku--vercel)  
+6. [배포 과정 (Heroku & Vercel)](#배포-과정정-heroku--vercel)  
 7. [실행 방법](#실행-방법)  
 8. [코드 상세](#코드-상세)  
    - [백엔드 구조](#백엔드-구조)  
@@ -149,7 +149,7 @@ npm run dev
 
 ---
 
-## 배포 (Heroku & Vercel)
+## 배포 과정 (Heroku & Vercel)
 
 ### 1. Heroku 배포 (백엔드)
 - Heroku CLI 설치 후 로그인
