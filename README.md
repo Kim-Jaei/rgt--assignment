@@ -93,7 +93,7 @@ Browser에서 Vercel로 접속 → Vercel이 Heroku API 호출 → JSON 데이�
 ---
 
 ## 설치 방법 (로컬)
-테스트 환경: Ubuntu 18.04
+테스트 환경: Windows 10
 
 1. 저장소 클론
 ```bash
