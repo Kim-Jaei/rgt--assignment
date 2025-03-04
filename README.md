@@ -410,7 +410,7 @@ export default {
 ---
 
 ## 개발 환경
-- OS: Ubuntu 18.04 LTS
+- OS: Windows 10
 - Node.js: v16.x
 - npm: v8.x
 - IDE: VSCode
